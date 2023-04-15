@@ -39,11 +39,15 @@ function onInput(e) {
         createMarkup(data);
       }
     })
-    .catch(onError);
+    .catch(error => {
+      if (error.message === '404') {
+        Notiflix.Notify.failure('Oops, there is no country with that name');
+      }
+    });
 }
 
-function onError(err) {
-  Notiflix.Notify.info(`${err}`);
+function onError(error) {
+  Notiflix.Notify.info(`${error}`);
 }
 
 function createMarkup(data) {
