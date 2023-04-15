@@ -18,6 +18,9 @@ inputEl.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 function onInput(e) {
   const country = e.target.value.trim();
 
+  clearMarkup(countryInfoEl);
+  clearMarkup(countryListEl);
+
   if (!country) {
     e.target.value = '';
     clearMarkup(countryInfoEl);
@@ -28,26 +31,24 @@ function onInput(e) {
   fetchCountries(country)
     .then(data => {
       if (data.length > 10) {
-        throw new Error(
+        Notiflix.Notify.info(
           'Too many matches found. Please enter a more specific name.'
         );
       } else if (!data.length) {
         clearMarkup(countryInfoEl);
         clearMarkup(countryListEl);
-        throw new Error('There is no country with that name');
+        Notiflix.Notify.failure('Oops, there is no country with that name');
       } else {
         createMarkup(data);
       }
     })
     .catch(error => {
+      clearMarkup(countryInfoEl);
+      clearMarkup(countryListEl);
       if (error.message === '404') {
         Notiflix.Notify.failure('Oops, there is no country with that name');
       }
     });
-}
-
-function onError(error) {
-  Notiflix.Notify.info(`${error}`);
 }
 
 function createMarkup(data) {
